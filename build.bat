@@ -6,15 +6,10 @@ python -m pip install -r requirements.txt
 echo.
 echo Building EXE...
 
-pyinstaller --clean --onefile --noconsole ^
-    --collect-all selenium ^
-    --add-data "ad.js;." ^
-    --add-data "skip.js;." ^
-    --add-data "btnPosition.js;." ^
-    main.py
+pyinstaller --clean --onefile --noconsole --name "YT-AutoSkip" --icon "icon.ico" --collect-all selenium --add-data "ad.js;." --add-data "skip.js;." --add-data "btnPosition.js;." main.py
 
 echo.
 echo Build finished.
-echo EXE: dist\main.exe
+echo EXE: dist\AutoSkip.exe
 
 pause
