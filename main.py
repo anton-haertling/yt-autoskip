@@ -4,6 +4,10 @@ from pathlib import Path
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import InvalidSessionIdException
+
+from pathlib import Path
+import sys
 
 import pyautogui
 
@@ -17,6 +21,7 @@ USER_DATA_DIR = r"C:\temp\chrome-selenium"
 
 BASE_DIR = Path(__file__).resolve().parent
 JS_FILE = BASE_DIR / "ad.js"
+
 
 
 def start_chrome():
@@ -41,7 +46,12 @@ def connect_selenium():
 
 
 def load_js(filename):
-    js_file = Path(__file__).resolve().parent / filename
+    if getattr(sys, "frozen", False):
+        base_dir = Path(sys._MEIPASS)
+    else:
+        base_dir = Path(__file__).resolve().parent
+
+    js_file = base_dir / filename
 
     with open(js_file, "r", encoding="utf-8") as file:
         return file.read()
@@ -96,11 +106,6 @@ def getMousePosition():
 
 
 def main():
-    start_chrome()
-
-    driver = connect_selenium()
-
-    print("Chrome verbunden")
 
     while True:
         data = updateData(driver)
@@ -114,12 +119,19 @@ def main():
         time.sleep(1)
         
         
-    
-    
-
-
-
-
 if __name__ == "__main__":
-    main()
+    try:
+        start_chrome()
+        driver = connect_selenium()
+        print("Chrome Verbunden")
+        
+        main()
+        
+    except InvalidSessionIdException:
+        print("\033[91m" + "Browser Closed" + "\033[0m")
+        
+    
+    except Exception:
+        driver.execute_script('alert("Error: Autoskip disabled"')
+        
 
